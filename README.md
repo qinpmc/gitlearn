@@ -193,7 +193,97 @@ Git分支相关命令如下：
 ```
 
 
+### 1、分支合并实例1 
 
+
+```
+（1）修改本分支（master分支）内容并提交
+
+原feature1.txt 中内容为：
+new content
+
+修改为:
+ new content master 
+
+
+添加并提交：
+$ git add feature1.txt 
+$ git commit -m "add master modify"
+ 
+（2）准备新的feature1分支并切换：
+
+$ git checkout -b feature1
+
+
+原feature1.txt最后一行，改为：
+修改为 new content feature1
+
+ 
+（3）在feature1分支上提交：
+$ git add feature1.txt 
+$ git commit -m "add feature1 modify"
+
+
+（4）切换到master分支：
+$ git checkout master
+ 
+（5）尝试合并
+$ git merge feature1
+
+命令行出现以下错误：
+ 
+Auto-merging feature1.txt
+CONFLICT (content): Merge conflict in feature1.txt
+Automatic merge failed; fix conflicts and then commit the result.
+ 
+ 表示同时修改了feature1.txt，出现了冲突。
+
+可用 $ git status  查看状态提示
+
+（6）打开冲突的文件查看冲突
+
+<<<<<<< HEAD
+
+new content master
+ 
+=======
+new content feature1
+>>>>>>> feature1
+
+
+以上错误的说明：
+<<<<<<< HEAD
+
+本地代码
+
+=======
+
+拉下来的代码
+
+>>>>>>>
+
+（7）修改冲突的文件
+修改feature1.txt为：
+new content  merge
+
+提交修改：
+
+$ git add feature1.txt 
+$ git commit -m "modify conflict"
+ 
+
+（8）用带参数的git log也可以看到分支的合并情况：
+$ git log --graph --pretty=oneline --abbrev-commit
+
+
+```
+
+
+
+
+```
+
+```
 
 
 
