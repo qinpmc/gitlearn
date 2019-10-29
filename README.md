@@ -277,13 +277,16 @@ $ git log --graph --pretty=oneline --abbrev-commit
 
 
 ```
+ 
+
+
+### 2、分支合并实例2
 
 
 
 
-```
 
-```
+
 
 
 
