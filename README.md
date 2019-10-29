@@ -190,6 +190,14 @@ Git分支相关命令如下：
 合并某分支到当前分支：git merge <name>
 
 删除分支：git branch -d <name>
+
+推送本地分支(feature1)到远程仓库：git push origin feature1
+查看推送后的结果： git branch -a
+
+删除远程分支：git push origin --delete feature1
+
+
+
 ```
 
 
@@ -338,7 +346,235 @@ new content  merge 2
 
 
 
+### 3、分支实例3
+
+
 ```
+Bug分支
+
+（1）当前正在dev分支工作，且进行的工作还没有提交：
+
+不是不想提交，而是工作只进行到一半，还没法提交，
+接到一个修复一个代号101的bug的任务时，想创建一个分支issue-101来修复它
+
+
+
+（2）把当前工作现场“储藏”起来，等以后恢复现场后继续工作
+$ git stash
+
+
+（3）假定需要在master分支上修复，就从master创建临时分支：
+$ git checkout master
+
+$ git checkout -b issue-101
+
+
+
+（4）在分支issue-101修复bug，然后提交：
+
+$ git add readme.txt 
+$ git commit -m "fix bug 101"
+
+
+（5）修复完成后，切换到master分支，完成合并，最后删除issue-101分支：
+
+$ git checkout master
+
+$ git merge --no-ff -m "merged bug fix 101" issue-101
+
+$ git branch -d issue-101
+
+
+（6）回到dev分支干活
+$ git checkout dev
+
+$ git stash list  --查看工作现场
+
+（7）恢复工作现场，有两个办法
+
+a）git stash apply恢复，但恢复后stash内容并不删除,需要用git stash drop来删除；
+
+b)git stash pop，恢复的同时把stash内容也删去：
+
+
+（8）查看工作现场
+$ git stash list  --查看工作现场，此时无stash
+
+ 
+
+
+```
+
+
+
+
+
+```
+
+## 六、版本回退
+
+1. 历史记录查看 git log：
+
+```
+$ git log
+$ git log --pretty=oneline    或$ git log --oneline
+
+```
+
+2. git reflog用来记录你的每一次命令：
+
+```
+ ---查找commit id
+$ git reflog
+```
+3. 版本回退
+
+在Git中，用HEAD表示当前版本，也就是最新的提交3628164...882e1e0，上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。
+
+```
+$ git reset --hard HEAD^     //回退到上一次提交
+
+
+$ git reset --hard 3628164    
+注：3628164 为版本id ，版本号没必要写全，前几位就可以了，Git会自动去找
+
+```
+ 
+
+4. 撤销
+
+（1）场景1：当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令git checkout -- file。
+
+```
+$ git checkout -- readme.txt
+```
+
+（2）场景2：当你不但改乱了工作区某个文件的内容，还添加（git add）到了暂存区时，想丢弃修改，分两步，第一步用命令git reset HEAD file，就回到了场景1，第二步按场景1操作。
+
+```
+$ git reset HEAD readme.txt
+$ git checkout -- readme.txt
+
+```
+
+（3）场景3：已经提交（git commit）了不合适的修改到版本库时，想要撤销本次提交，参考版本回退一节，不过前提是没有推送到远程库。
+
+```
+$ git reset --hard 3628164
+
+```
+ 
+## 七、标签管理
+ 
+标签管理相对比较简单，主要涉及以下几个命令：
+
+```
+1. 查看所有标签：git tag
+2. 创建标签 : git tag tagname 
+3. 指定提交信息 : git tag -a name -m "comment"
+4. 删除标签 : git tag -d tagname
+5. 标签发布到远程仓库 : git push origin tagname
+6. 删除远程标签：git push origin :refs/tags/tagname
+7. 忘了给以前的版本打标签:
+    git log --pretty=oneline --abbrev-commit
+    git tag v0.9 6224937        //6224937 为提交id
+    // git tag -a v0.1 -m "version 0.1 released" 3628164   //带评论的tag
+8. 查看标签信息： git show v0.9
+```
+
+
+## 八、git仓库忽略文件及指定仓库语言
+ 
+1 、自定义git仓库语言
+git 仓库会自动根据提交的文件判断仓库的语言，但有时不太准确，可以自定义修改,
+仓库中新建  .gitattributes 文件，文件内容大致如下：
+
+```
+# Auto detect text files and perform LF normalization
+# 本示例将.html .js 文件均视作js语言
+*.js linguist-language=javascript
+*.html linguist-language=javascript
+```
+
+2 、 git仓库忽略文件
+
+- （1）. 仓库中新建  .gitignore文件，文件内容大致如下：
+
+```
+# 忽略node_modules 文件夹
+node_modules
+
+# Windows:
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python:
+*.py[cod]
+*.so
+*.egg
+
+# Java:
+*.class
+```
+
+- （2）. 此时无法添加 .class 文件 ，git status 无法查看到该文件
+
+- （3）. 确实想添加该文件，可以用-f强制添加到Git：
+
+```
+git add -f App.class
+
+```
+ 
+
+
+## 九、配置别名
+
+- （1）用st表示status：
+
+```
+$ git config --global alias.st status
+```
+
+- (2)用unstage表示reset HEAD
+
+```
+$ git config --global alias.unstage 'reset HEAD'
+```
+
+- (3)用last表示最近一次提交（命令中无--global
+
+```
+$ git config  alias.last 'log -1'
+```
+
+- （4）加上--global是针对当前用户起作用的，如果不加，那只针对当前的仓库起作用    
+  
+  
+- (5) 每个仓库的Git配置文件都放在.git/config文件中：
+
+```
+$ cat .git/config 
+```
+
+别名就在[alias]后面，要删除别名，直接把对应的行删掉即可。
+
+- (6) 而当前用户的Git配置文件放在用户主目录（/c/Users/userName/）下的一个隐藏文件.gitconfig中：
+
+```
+$ cat .gitconfig
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
