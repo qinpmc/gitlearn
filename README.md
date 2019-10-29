@@ -283,9 +283,62 @@ $ git log --graph --pretty=oneline --abbrev-commit
 ### 2、分支合并实例2
 
 
+```
+ (0) 远程仓库feature1.txt 的master分支修改:
+
+原feature1.txt 中内容为：
+new content merge 
+
+修改为：
+new content merge remote
+
+提交：
+$ git add feature1.txt 
+$ git commit -m "add remote"
+
+
+（1）修改本分支（master分支）内容并提交
+
+原feature1.txt 中内容为：
+new content 
+
+修改为:
+new content merge local
+
+
+添加并提交：
+$ git add feature1.txt 
+$ git commit -m "add local"
+
+（2） 拉取代码
+
+$ git pull origin master
+
+发生冲突：
+
+From github.com:qinpmc/gitlearn
+ * branch            master     -> FETCH_HEAD
+Auto-merging feature1.txt
+CONFLICT (content): Merge conflict in feature1.txt
+Automatic merge failed; fix conflicts and then commit the result.
+
+（3）查看冲突文件
+
+打开 feature1.txt ：
+<<<<<<< HEAD
+new content  merge local
+=======
+new content  merge remote
+>>>>>>> 5d1929407d795ea3bc0003625ef4a1557f4c82d6
+
+
+（4） 解决冲突提交
+修改冲突的 feature1.txt 为：
+new content  merge 2
 
 
 
+```
 
 
 
