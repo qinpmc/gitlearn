@@ -1,4 +1,4 @@
-# git笔记
+﻿# git笔记
 参考资料：https://www.liaoxuefeng.com/wiki/896043488029600
 
 
@@ -567,9 +567,13 @@ $ cat .gitconfig
 ```
 
 
+## 十、其他
 
+- 1. 有时git 命令行文件目录为数字形式的目录，处理方式：
 
-
+```
+git config --global core.quotepath false
+```
 
 
 
